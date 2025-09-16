@@ -10,11 +10,11 @@ public class ST10474409_ChatApp {
     private String firstName;
     private String lastName;
 
-    // === Constructors ===
+    
 
-    // Default constructor
+    // constructor
     public ST10474409_ChatApp() {
-        this.username = "";ZZ
+        this.username = "";
         this.password = "";
         this.cellNumber = "";
         this.firstName = "";
@@ -54,7 +54,7 @@ public class ST10474409_ChatApp {
         scanner.close();
     }
 
-    // === Validation Methods ===
+    // Validation MethodS
 
     public boolean checkUsername(String username) {
         return username.length() <= 5 && username.contains("_");
@@ -72,7 +72,7 @@ public class ST10474409_ChatApp {
         return Pattern.matches(pattern, cellNumber);
     }
 
-    // === Registration ===
+    //  Registration Process
 
     public String registerUser(Scanner scanner) {
         System.out.print("Enter your first name: ");
