@@ -14,7 +14,7 @@ public class ST10474409_ChatApp {
 
     // Default constructor
     public ST10474409_ChatApp() {
-        this.username = "";
+        this.username = "";ZZ
         this.password = "";
         this.cellNumber = "";
         this.firstName = "";
