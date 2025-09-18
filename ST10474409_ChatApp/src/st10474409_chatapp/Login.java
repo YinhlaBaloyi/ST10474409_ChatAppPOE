@@ -4,7 +4,7 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 
 // Correct class declaration and inheritance
-public class Login extends ST10474409_ChatAppPOE {
+public class Login extends ST10474409_ChatApp {
     private String userName;
     private String password;
     private String cellNumber;
@@ -75,4 +75,3 @@ public class Login extends ST10474409_ChatAppPOE {
         return "Username or password incorrect, please try again.";
     }
 }
-
