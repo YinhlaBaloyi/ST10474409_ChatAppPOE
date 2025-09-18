@@ -1,15 +1,16 @@
-package st10474409_chatapp;
+package st10474409_chatappoe;
 
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-public class Login {
+// Correct class declaration and inheritance
+public class Login extends ST10474409_ChatAppPOE {
     private String userName;
     private String password;
     private String cellNumber;
     private String firstName;
     private String lastName;
-    
+
     // Check if username meets requirements
     public boolean checkUsernameFormat(String username) {
         return username.length() <= 5 && username.contains("_");
