@@ -1,4 +1,4 @@
-package st10474409_chatappoe;
+package st10474409_chatapp;
 
 import java.util.Scanner;
 import java.util.regex.Pattern;
@@ -75,3 +75,4 @@ public class Login extends ST10474409_ChatAppPOE {
         return "Username or password incorrect, please try again.";
     }
 }
+
