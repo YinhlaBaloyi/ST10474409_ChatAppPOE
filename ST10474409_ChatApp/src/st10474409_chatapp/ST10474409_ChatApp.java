@@ -73,7 +73,8 @@ public class ST10474409_ChatApp {
             System.out.println("4) Quit");
             System.out.print("Enter your choice: ");
             
-            int choice = getIntInput(scanner);
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
             
             switch (choice) {
                 case 1:
@@ -97,7 +98,8 @@ public class ST10474409_ChatApp {
 
     private void sendMessages(Scanner scanner) {
         System.out.print("How many messages do you wish to send? ");
-        int numMessages = getIntInput(scanner);
+        int numMessages = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
         
         for (int i = 0; i < numMessages; i++) {
             System.out.println("\n--- Message " + (i + 1) + " ---");
@@ -107,7 +109,7 @@ public class ST10474409_ChatApp {
             // Get recipient number
             String recipient;
             do {
-                System.out.print("Enter recipient cell number (with international code, e.g., +27718693002): ");
+                System.out.print("Enter recipient cell number (with international code): ");
                 recipient = scanner.nextLine();
                 if (message.checkRecipientCell(recipient) == 0) {
                     System.out.println("Cell phone number is incorrectly formatted or does not contain an international code. Please correct the number and try again.");
@@ -123,18 +125,9 @@ public class ST10474409_ChatApp {
                 if (messageText.length() > 250) {
                     int excess = messageText.length() - 250;
                     System.out.println("Message exceeds 250 characters by " + excess + ", please reduce size.");
-                } else if (messageText.isEmpty()) {
-                    System.out.println("Message cannot be empty.");
                 }
-            } while (messageText.length() > 250 || messageText.isEmpty());
+            } while (messageText.length() > 250);
             message.setMessage(messageText);
-            
-            // Display message details
-            System.out.println("\nMessage Details:");
-            System.out.println("Message ID: " + message.getMessageID());
-            System.out.println("Message Hash: " + message.getMessageHash());
-            System.out.println("Recipient: " + message.getRecipient());
-            System.out.println("Message: " + message.getMessage());
             
             // Display message options
             System.out.println("\nChoose an option for this message:");
@@ -142,7 +135,8 @@ public class ST10474409_ChatApp {
             System.out.println("2) Disregard Message");
             System.out.println("3) Store Message to send later");
             System.out.print("Enter your choice: ");
-            int sendChoice = getIntInput(scanner);
+            int sendChoice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
             
             String result = message.sentMessage(sendChoice);
             System.out.println(result);
@@ -157,25 +151,12 @@ public class ST10474409_ChatApp {
         }
         
         // Display total messages sent
-        System.out.println("\nTotal messages sent in this session: " + Message.returnTotalMessages());
+        System.out.println("\nTotal messages sent: " + Message.returnTotalMessages());
     }
 
     private void viewStoredMessages() {
         String storedMessages = JSONHandler.getAllMessages();
         System.out.println("\n" + storedMessages);
-    }
-
-    private int getIntInput(Scanner scanner) {
-        while (true) {
-            try {
-                int input = scanner.nextInt();
-                scanner.nextLine(); // Consume newline
-                return input;
-            } catch (Exception e) {
-                System.out.print("Invalid input. Please enter a number: ");
-                scanner.nextLine(); // Clear invalid input
-            }
-        }
     }
 
     // Validation Methods
@@ -204,14 +185,14 @@ public class ST10474409_ChatApp {
         String lastNameInput = scanner.nextLine();
 
         // Username validation
-        System.out.print("Enter username (must contain _ and be ≤5 characters): ");
+        System.out.print("Enter username (must contain _ and be <5 characters): ");
         String usernameInput = scanner.nextLine();
         if (!checkUsername(usernameInput)) {
             return "Username is not correctly formatted. Please ensure that your username contains an underscore and is no more than five characters in length.";
         }
 
         // Password validation
-        System.out.print("Enter password (≥8 chars, with capital letter, number, and special character): ");
+        System.out.print("Enter password (<8 chars, with capital letter, number, and special character): ");
         String passwordInput = scanner.nextLine();
         if (!checkPasswordComplexity(passwordInput)) {
             return "Password is not correctly formatted. Please ensure the password contains at least eight characters, a capital letter, a number, and a special character.";
