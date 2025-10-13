@@ -1,8 +1,9 @@
-package st10474409_chatapp;
+package st10474409_ChatApp;
 
-import java.util.Scanner;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.regex.Pattern;
-import javax.swing.JOptionPane;
 
 public class ST10474409_ChatApp {
     private String username;
@@ -12,154 +13,134 @@ public class ST10474409_ChatApp {
     private String lastName;
     private boolean isLoggedIn = false;
 
-    // Constructors
-    public ST10474409_ChatApp() {
-        this.username = "";
-        this.password = "";
-        this.cellNumber = "";
-        this.firstName = "";
-        this.lastName = "";
-    }
-
-    public ST10474409_ChatApp(String username, String password, String cellNumber, String firstName, String lastName) {
-        this.username = username;
-        this.password = password;
-        this.cellNumber = cellNumber;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
-
-    // === Main method ===
+    // === GUI Entry Point ===
     public static void main(String[] args) {
-        ST10474409_ChatApp loginSystem = new ST10474409_ChatApp();
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("=== Registration ===");
-        String registrationResult = loginSystem.registerUser(scanner);
-        System.out.println("\n" + registrationResult);
-
-        if (registrationResult.toLowerCase().contains("successful")) {
-            System.out.println("\n=== Login ===");
-            System.out.print("Enter username: ");
-            String enteredUsername = scanner.nextLine();
-
-            System.out.print("Enter password: ");
-            String enteredPassword = scanner.nextLine();
-
-            boolean loginSuccess = loginSystem.loginUser(enteredUsername, enteredPassword);
-            System.out.println("\n" + loginSystem.returnLoginStatus(loginSuccess));
-            
-            if (loginSuccess) {
-                loginSystem.isLoggedIn = true;
-                loginSystem.runMessagingSystem(scanner);
-            }
-        }
-
-        scanner.close();
+        SwingUtilities.invokeLater(() -> {
+            ST10474409_ChatApp app = new ST10474409_ChatApp();
+            app.showMainMenu();
+        });
     }
 
-    // Messaging System
-    private void runMessagingSystem(Scanner scanner) {
-        System.out.println("\n=== QuickChat Messaging System ===");
-        System.out.println("Welcome to QuickChat.");
-        
-        boolean running = true;
-        
-        while (running) {
-            System.out.println("\nPlease choose an option:");
-            System.out.println("1) Send Messages");
-            System.out.println("2) Show recently sent messages");
-            System.out.println("3) View Stored Messages");
-            System.out.println("4) Quit");
-            System.out.print("Enter your choice: ");
-            
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
-            
-            switch (choice) {
-                case 1:
-                    sendMessages(scanner);
-                    break;
-                case 2:
-                    System.out.println("Coming Soon.");
-                    break;
-                case 3:
-                    viewStoredMessages();
-                    break;
-                case 4:
-                    System.out.println("Thank you for using QuickChat. Goodbye!");
-                    running = false;
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
-            }
-        }
+    // === GUI: Main Menu ===
+    private void showMainMenu() {
+        JFrame frame = new JFrame("QuickChat Messaging Apllication");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 300);
+        frame.setLayout(new BorderLayout());
+
+        JLabel welcomeLabel = new JLabel("Welcome to QuickChat.", SwingConstants.CENTER);
+        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 18));
+
+        JButton sendBtn = new JButton("Send Messages");
+        JButton recentBtn = new JButton("Show Recently Sent Messages");
+        JButton storedBtn = new JButton("View Stored Messages");
+        JButton quitBtn = new JButton("Quit");
+
+        JPanel buttonPanel = new JPanel(new GridLayout(4, 1, 10, 10));
+        buttonPanel.add(sendBtn);
+        buttonPanel.add(recentBtn);
+        buttonPanel.add(storedBtn);
+        buttonPanel.add(quitBtn);
+
+        frame.add(welcomeLabel, BorderLayout.NORTH);
+        frame.add(buttonPanel, BorderLayout.CENTER);
+
+        // === Event Listeners ===
+        sendBtn.addActionListener(e -> sendMessagesGUI());
+        recentBtn.addActionListener(e -> JOptionPane.showMessageDialog(frame, "Coming Soon."));
+        storedBtn.addActionListener(e -> viewStoredMessagesGUI());
+        quitBtn.addActionListener(e -> {
+            JOptionPane.showMessageDialog(frame, "Thank you for using QuickChat. Goodbye!");
+            frame.dispose();
+        });
+
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
     }
 
-    private void sendMessages(Scanner scanner) {
-        System.out.print("How many messages do you wish to send? ");
-        int numMessages = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
-        
-        for (int i = 0; i < numMessages; i++) {
-            System.out.println("\n--- Message " + (i + 1) + " ---");
-            
-            Message message = new Message();
-            
-            // Get recipient number
-            String recipient;
-            do {
-                System.out.print("Enter recipient cell number (with international code): ");
-                recipient = scanner.nextLine();
-                if (message.checkRecipientCell(recipient) == 0) {
-                    System.out.println("Cell phone number is incorrectly formatted or does not contain an international code. Please correct the number and try again.");
-                }
-            } while (message.checkRecipientCell(recipient) == 0);
+    // === GUI: Send Messages ===
+    private void sendMessagesGUI() {
+        JFrame sendFrame = new JFrame("Send Message");
+        sendFrame.setSize(400, 400);
+        sendFrame.setLayout(new GridLayout(7, 1, 10, 10));
+
+        JTextField recipientField = new JTextField();
+        JTextArea messageArea = new JTextArea();
+        JButton sendBtn = new JButton("Send Message");
+        JButton storeBtn = new JButton("Store Message");
+        JButton discardBtn = new JButton("Discard Message");
+
+        sendFrame.add(new JLabel("Recipient Cell Number (with +code):"));
+        sendFrame.add(recipientField);
+        sendFrame.add(new JLabel("Message (max 250 characters):"));
+        sendFrame.add(new JScrollPane(messageArea));
+        sendFrame.add(sendBtn);
+        sendFrame.add(storeBtn);
+        sendFrame.add(discardBtn);
+
+        sendFrame.setLocationRelativeTo(null);
+        sendFrame.setVisible(true);
+
+        // Message object
+        Message message = new Message();
+
+        // === Action Listeners ===
+        sendBtn.addActionListener(e -> {
+            String recipient = recipientField.getText().trim();
+            String text = messageArea.getText().trim();
+
+            if (message.checkRecipientCell(recipient) == 0) {
+                JOptionPane.showMessageDialog(sendFrame, "Invalid phone number. Must include international code.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (text.length() > 250) {
+                JOptionPane.showMessageDialog(sendFrame, "Message exceeds 250 characters.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             message.setRecipient(recipient);
-            
-            // Get message content
-            String messageText;
-            do {
-                System.out.print("Enter your message (max 250 characters): ");
-                messageText = scanner.nextLine();
-                if (messageText.length() > 250) {
-                    int excess = messageText.length() - 250;
-                    System.out.println("Message exceeds 250 characters by " + excess + ", please reduce size.");
-                }
-            } while (messageText.length() > 250);
-            message.setMessage(messageText);
-            
-            // Display message options
-            System.out.println("\nChoose an option for this message:");
-            System.out.println("1) Send Message");
-            System.out.println("2) Disregard Message");
-            System.out.println("3) Store Message to send later");
-            System.out.print("Enter your choice: ");
-            int sendChoice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
-            
-            String result = message.sentMessage(sendChoice);
-            System.out.println(result);
-            
-            if (sendChoice == 1) {
-                // Display message details in JOptionPane
-                JOptionPane.showMessageDialog(null, 
-                    "Message Details:\n" + message.printMessages(),
-                    "Message Sent", 
-                    JOptionPane.INFORMATION_MESSAGE);
+            message.setMessage(text);
+            String result = message.sentMessage(1); // Send
+            JOptionPane.showMessageDialog(sendFrame, result + "\n\n" + message.printMessages(), "Message Sent", JOptionPane.INFORMATION_MESSAGE);
+        });
+
+        storeBtn.addActionListener(e -> {
+            String recipient = recipientField.getText().trim();
+            String text = messageArea.getText().trim();
+
+            if (message.checkRecipientCell(recipient) == 0 || text.isEmpty()) {
+                JOptionPane.showMessageDialog(sendFrame, "Please fill in all fields correctly.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
             }
-        }
-        
-        // Display total messages sent
-        System.out.println("\nTotal messages sent: " + Message.returnTotalMessages());
+
+            message.setRecipient(recipient);
+            message.setMessage(text);
+            String result = message.sentMessage(3); // Store
+            JOptionPane.showMessageDialog(sendFrame, result, "Stored", JOptionPane.INFORMATION_MESSAGE);
+        });
+
+        discardBtn.addActionListener(e -> {
+            recipientField.setText("");
+            messageArea.setText("");
+            JOptionPane.showMessageDialog(sendFrame, "Message discarded.");
+        });
     }
 
-    private void viewStoredMessages() {
-        String storedMessages = JSONHandler.getAllMessages();
-        System.out.println("\n" + storedMessages);
+    // === GUI: View Stored Messages ===
+    private void viewStoredMessagesGUI() {
+        JFrame viewFrame = new JFrame("Stored Messages");
+        viewFrame.setSize(400, 300);
+
+        JTextArea messagesArea = new JTextArea();
+        messagesArea.setEditable(false);
+        messagesArea.setText(JSONHandler.getAllMessages());
+
+        viewFrame.add(new JScrollPane(messagesArea));
+        viewFrame.setLocationRelativeTo(null);
+        viewFrame.setVisible(true);
     }
 
-    // Validation Methods
+    // === Validation Methods ===
     public boolean checkUsername(String username) {
         return username.length() <= 5 && username.contains("_");
     }
@@ -174,45 +155,6 @@ public class ST10474409_ChatApp {
     public boolean checkCellPhoneNumber(String cellNumber) {
         String pattern = "^\\+\\d{1,3}\\d{7,10}$";
         return Pattern.matches(pattern, cellNumber);
-    }
-
-    // Registration Process
-    public String registerUser(Scanner scanner) {
-        System.out.print("Enter your first name: ");
-        String firstNameInput = scanner.nextLine();
-
-        System.out.print("Enter your last name: ");
-        String lastNameInput = scanner.nextLine();
-
-        // Username validation
-        System.out.print("Enter username (must contain _ and be <5 characters): ");
-        String usernameInput = scanner.nextLine();
-        if (!checkUsername(usernameInput)) {
-            return "Username is not correctly formatted. Please ensure that your username contains an underscore and is no more than five characters in length.";
-        }
-
-        // Password validation
-        System.out.print("Enter password (<8 chars, with capital letter, number, and special character): ");
-        String passwordInput = scanner.nextLine();
-        if (!checkPasswordComplexity(passwordInput)) {
-            return "Password is not correctly formatted. Please ensure the password contains at least eight characters, a capital letter, a number, and a special character.";
-        }
-
-        // Cell number validation
-        System.out.print("Enter cell phone number (with international code, e.g., +27831234567): ");
-        String cellNumberInput = scanner.nextLine();
-        if (!checkCellPhoneNumber(cellNumberInput)) {
-            return "Cell phone number is incorrectly formatted or does not contain a valid international code.";
-        }
-
-        // Save validated data
-        this.firstName = firstNameInput;
-        this.lastName = lastNameInput;
-        this.username = usernameInput;
-        this.password = passwordInput;
-        this.cellNumber = cellNumberInput;
-
-        return "Registration successful!";
     }
 
     // === Login ===
