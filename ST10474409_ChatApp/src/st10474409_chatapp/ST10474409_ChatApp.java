@@ -1,4 +1,4 @@
-package st10474409_ChatApp;
+package st10474409_chatapp;
 
 import javax.swing.*;
 import java.awt.*;
